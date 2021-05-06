@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "EditMeal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewData["id"]</h2>
+
+<center>
+    <h2>Edit Meal</h2>
+    <input type="text" id="name" placeholder="Name" class="form-control" style="width:45%"  /><br />
+    <input type="text" id="price" placeholder="Price" class="form-control" style="width:45%"  /><br />
+    <input type="text" id="category" placeholder="Category" class="form-control" style="width:45%"  /><br />
+    <img id="the_photo" height="100" width="100" /><br />
+    <input type="file" id="photo" class="form-control" style="width:45%" /><br />
+    <input type="submit" id="save" value="Save" class="btn btn-danger" style="width:45%" />
+</center>
+
+@section scripts
+   {
+    <script>
+         function showMeal() {
+             $.ajax({
+                 url: "/api/cms/" + @ViewData["id"],
+                 method: "GET",
+                 dataType: "json",
+                 success: function (data) {
+                     $("#name").val(data.Name);
+                     $("#price").val(data.Price);
+                     $("#category").val(data.Category);
+                     $("#the_photo").attr("src", "/content/images/" + data.Photo);
+                 }
+             });
+         }
+
+         function imagePreview(input) {
+             var fileReader = new FileReader();
+             fileReader.readAsDataURL(input.files[0]);
+
+             fileReader.onload = function (e) {
+                 $("#the_photo").attr("src", e.target.result);
+             }
+         }
+
+
+         $(document).ready(function () {
+             showMeal();
+
+            $("#photo").change(function () {
+              imagePreview(this);
+            });
+
+             $("#save").click(function () {
+                 var f = $("#photo")[0].files;
+                 var formData = new FormData();
+                 for (var i = 0; i < f.length; i++) {
+                     formData.append("file" + i, f[i]);
+                 }
+
+                 formData.append("Id",@ViewData["id"]);
+                 formData.append("Name", $("#name").val());
+                 formData.append("Price", $("#price").val());
+                 formData.append("Category", $("#category").val());
+                 formData.append("Photo", f[0].name);
+
+                 $.ajax({
+                     url: "/api/cms/",
+                     method: "PUT",
+                     contentType: false,
+                     processData: false,
+                     data: formData,
+                     success: function () {
+                         alert('Done');
+                         window.location = "/admincms/";
+                     }
+                 });
+             });
+         });
+    </script>
+}

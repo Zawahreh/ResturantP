@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "FindBill";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<center>
+    <h2>Bill info</h2>
+    <h3 id="order_no"></h3>
+    <h3 id="order_date"></h3>
+    <h3 id="order_email"></h3>
+    <br />
+    <div id="order_details"></div>
+    <br /><br /><br /><br />
+    <input type="button" id="dlv" class="btn btn-danger" value="Delevered" />
+</center>
+
+
+@section scripts
+  {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/api/Orders/@ViewData["BillId"]",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (k,v) {
+                        if (k==0) {
+
+                            $("#order_no").html("Order No " + v.Bill.Id);
+                            $("#order_date").html("Order Date " + v.Bill.Name);
+                            $("#order_email").html("Order Email " + v.Bill.Email);
+                        }
+
+                        $("#order_details").append("Meal:  "+v.Meals.Name+"<br/>")
+                        $("#order_details").append("Qty:  " + v.BillDetails.Qty + "<br/>")
+                    });
+                }
+            });
+
+
+            $.ajax({
+                url: "/api/Orders/@ViewData["BillId"]",
+                method: "PUT",
+                contentType: "application/json",
+                success: function () {
+                   // alert('done');
+                }
+            });
+
+
+            $("#dlv").click(function () {
+                $.ajax({
+                    url: "/api/Orders?billNo=@ViewData["BillId"]",
+                    method: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        alert("Delivered");
+                    }
+                });
+            });
+        });
+    </script>
+} 

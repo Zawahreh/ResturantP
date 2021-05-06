@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<a href="~/AdminCms/AddMeal/" class="btn btn-primary">Add New</a>
+<br /><br />
+<button id="dlt_all" class="btn btn-danger">Delete All Meals</button>
+<br />
+<br />
+<br />
+
+<table id="meals_tbl" class="table table-bordered table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Category</th>
+        <th>Photo</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+</table>
+
+@section scripts
+    {
+    <script>
+        function showMeals() {
+            $.ajax({
+                url: "/api/cms/",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    $.each(data, function (k, v) {
+                        $('#meals_tbl tr:last').after("<tr><td>" +v.Name + "</td><td>" + v.Price + "</td><td> " + v.Category + "</td><td><img src='/Content/images/" + v.Photo + "'  height=64 width=64 />" +
+                            "</td><td><input value='Edit' class='btn btn-primary' type='button' id='edt' data-meal-id ='" + v.Id + "'</td>" +
+                            "<td><input value='Delete' class='btn btn-danger' type='button' id='dlt' data-meal-id ='" + v.Id + "'</td><tr>");
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            showMeals();
+
+            $(document).on("click", "#dlt", function () {
+                if (confirm("Do you want to delete it ?")) {
+                    var btn = $(this);
+                    $.ajax({
+                        url: "/api/CMS/" + btn.attr("data-meal-id"),
+                        method: "DELETE",
+                        success: function () {
+                            btn.parents().remove("tr");
+                        }
+                    });
+                }
+            });
+
+            $("#meals_tbl").on("click", "#edt", function () {
+                var btn = $(this);
+                window.location = "/admincms/editmeal/" + btn.attr("data-meal-id");             
+            });
+
+            $("#dlt_all").click(function () {
+                if (confirm("Are you sure you want to delete ALL Meals ?")) {
+                    $.ajax({
+                        url: "/api/CMS/",
+                        method: "DELETE",
+                        success: function () {
+                            window.location = "/admincms/addmeal/";
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

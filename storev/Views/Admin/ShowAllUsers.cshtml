@@ -1,0 +1,51 @@
+﻿@model IEnumerable<storev.ViewModels.UserRolesVM>
+@{
+    ViewBag.Title = "ShowAllUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Show All Users</h2>
+<table class="table table-bordered table-hover" id="UsersTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach (var user in Model)
+        {
+           <tr>
+               <td>@user.Name</td>
+               <td>@user.Email</td>
+               <td>@user.Role</td>
+           </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@section scripts{
+     <script>
+         $(document).ready(function () {
+             $("#UsersTable").DataTable({
+                 paging: true,
+                 lengthChange: true,
+                 searching: true,
+                 ordering: true,
+                 info: true,
+                 autoWidth: true
+             });
+         });
+
+     </script>
+    } 
+
+
+
+
+
+
+

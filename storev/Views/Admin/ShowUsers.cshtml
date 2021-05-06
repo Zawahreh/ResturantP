@@ -1,0 +1,24 @@
+﻿@model IEnumerable<storev.Models.ApplicationUser>
+@{
+    ViewBag.Title = "ShowUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add to Role</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Add To Role</td>
+    </tr>
+
+   @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Name</td>
+            <td>@Html.ActionLink("Add", "AddUserToRole","Admin",new { id = user.Id},new { @class = "btn btn-primary"})</td>
+        </tr>
+    }
+</table>

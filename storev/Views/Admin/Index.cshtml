@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.ActionLink("Show All Users","ShowAllUsers","Admin",new { @class = "btn-link"})
+<br /><br />
+
+<table class="table table-bordered">
+    <tr>
+        <td>ID</td>
+        <td>Name</td>
+        <td>Add user to role</td>
+
+    </tr>
+   @foreach (var role in Model)
+    {
+       <tr>
+           <td>@role.Id</td>
+           <td>@role.Name</td>
+           <td><a class="btn btn-primary" href="~/Admin/ShowUsers/@role.Name">Add user</a></td>
+       </tr>
+    }
+</table>
+<br /><br /><br /><br /><br /><hr />
+
+
+
+
+
+
+<h2>Create a new Role</h2>
+<br />
+
+<form action="~/Admin/SaveRole/" method="post">
+    <input type="text" class="form-control" name="roleName" placeholder="Role Name" width="30" /><br />
+    @Html.AntiForgeryToken()
+    <input type="submit" value="Save" class="btn btn-success" />
+</form>
+
+
+<hr /><br /><br />
